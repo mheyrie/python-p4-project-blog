@@ -53,7 +53,7 @@ class Post(db.Model):
 
     tags =db.relationship('TagPost', back_populates='post')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', backref='speaker')
+    user = db.relationship('User', backref='post')
     
 
     def __repr__(self):

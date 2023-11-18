@@ -30,33 +30,30 @@ with app.app_context():
 
     all_users = []
     for value in range(15):
+        name = fake.name()
+        email = f'{name.replace(" ", "").lower()}@gmail.com'
         u = User(
-            name=fake.name(),
-            email=f'{name}@{fake.domain_name()}',
+            name=name,
+            email=email,
             phone_number=fake.numerify('###-###-####'),
             password=fake.password(),)
-        
         all_users.append(u)
     db.session.add_all(all_users)
     # print(all_users)
 
 
     all_posts = []
-
-   
-
+    
     for value in range(15):
-        
         p = Post(  
             image=fake.image_url(),
             title=fake.sentence(nb_words=3),
             body=fake.sentence(nb_words=30),
-            user = rc(all_posts),
+            user = rc(all_users),
             )
-            
-            
         all_posts.append(p)
     db.session.add_all(all_posts)
+
 
     all_tags = []
     for value in range(15):
@@ -66,6 +63,7 @@ with app.app_context():
         )
         all_tags.append(t)
     db.session.add_all(all_tags)
+
 
     tagspost = []
     for value in range(15):
@@ -79,4 +77,4 @@ with app.app_context():
 
 
 
-    db.session.commit()
+    # db.session.commit()
