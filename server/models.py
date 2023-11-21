@@ -32,7 +32,7 @@ class Post(db.Model, SerializerMixin):
 class Tag(db.Model, SerializerMixin):
     __tablename__ = 'tags'
 
-    serialize_rules = ('-post.tags', 'user.tags',)
+    serialize_rules = ('-post.tags', 'user.tags', '-post_id')
 
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100))

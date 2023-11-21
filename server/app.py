@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, User, Post
+from models import db, User, Post, Tag
 
 
 
@@ -25,23 +25,54 @@ def users():
     if request.method == 'GET':
         return make_response(jsonify([user.to_dict(rules=('-tags','-password',)) for user in User.query.all()]), 200)
     
-    if request.method == 'POST':
-        data = request.get_json()
-        user = User(name=data.get('name'), email=data.get('email'), phone_number=data.get('phone_number'), password=data.get('password'))
-        db.session.add(user)
+    elif request.method == 'POST':
+        new_user = User(
+            name=request.form.get('name'), 
+            email=request.form.get('email'), 
+            phone_number=request.form.get('phone_number'), 
+            password=request.form.get('password'))
+        
+        db.session.add(new_user)
         db.session.commit()
-        return make_response(
-            jsonify(
-                {'id': user.id, 'name': user.name, 'email': user.email, 'phone_number': user.phone_number, 'password': user.password}
-            )
+
+        user_dict = new_user.to_dict()
+        response = make_response(
+            user_dict,
+            201
         )
+
+        return response
 
 @app.route('/posts', methods=['GET'])
 def posts():
     if request.method == 'GET':
         return make_response(jsonify([post.to_dict() for post in Post.query.all()]), 200)
+    
+@app.route('/posts/<int:id>', methods=['GET'])
+def post_by_id(id):
+    post = Post.query.filter(Post.id==id).first()
+    
+    if post == None:
+        response_body = {
+            "message": "Not found. Please try again."
+        }
+        response = make_response(response_body, 404)
+        return response
+    else:
+        if request.method == 'GET':
+            post_dict = post.to_dict()
+
+            response = make_response(
+                jsonify(post_dict),
+                200
+            )
+            return response
 
 
+@app.route('/tags', methods=['GET'])
+def tags():
+    if request.method == 'GET':
+        return make_response(jsonify([tag.to_dict(rules=('-user', '-post'),) for tag in Tag.query.all()]), 200)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

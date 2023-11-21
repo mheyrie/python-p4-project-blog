@@ -68,8 +68,4 @@ with app.app_context():
     db.session.add_all(all_tags)
 
 
-    
-
-
-
     # db.session.commit()
