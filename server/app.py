@@ -3,8 +3,6 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db, User, Post, Tag
 
-
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,35 +18,52 @@ db.init_app(app)
 def home():
     return '<h1>Welcome to my Blog</h1>'
 
+
 @app.route('/users', methods=['GET', 'POST'])
 def users():
-    if request.method == 'GET':
-        return make_response(jsonify([user.to_dict(rules=('-tags','-password',)) for user in User.query.all()]), 200)
-    
-    elif request.method == 'POST':
-        new_user = User(
-            name=request.form.get('name'), 
-            email=request.form.get('email'), 
-            phone_number=request.form.get('phone_number'), 
-            password=request.form.get('password'))
+    # if request.method == 'GET':
+    #     return make_response(jsonify([user.to_dict(rules=('-tags','-password',)) for user in User.query.all()]), 200)
+    if request.method == 'POST':
+        data = request.json
+
+        email = data.get('email')
+
+        db_user = User.query.filter_by(email==email).first()
+
+        if db_user is not None:
+            response_body = {
+                "message": "This email already exists, Please use a different email to sign up"
+            }
+
+            response = make_response(jsonify(response_body), 404)
+
+            return response 
         
-        db.session.add(new_user)
-        db.session.commit()
+        else:
+            new_user = User(
+                name=data.get('name'), 
+                email=data.get('email'), 
+                phone_number=data.get('phone_number'), 
+                password=data.get('password'))
+            
+            db.session.add(new_user)
+            db.session.commit()
 
-        user_dict = new_user.to_dict()
-        response = make_response(
-            user_dict,
-            201
-        )
+            user_dict = new_user.to_dict()
+            response = make_response(
+                jsonify(user_dict),
+                201
+            )
 
-        return response
+            return response
 
 @app.route('/posts', methods=['GET'])
 def posts():
     if request.method == 'GET':
         return make_response(jsonify([post.to_dict() for post in Post.query.all()]), 200)
     
-@app.route('/posts/<int:id>', methods=['GET'])
+    
+@app.route('/posts/<int:id>', methods=['GET', 'POST', 'DELETE'])
 def post_by_id(id):
     post = Post.query.filter(Post.id==id).first()
     
@@ -58,15 +73,32 @@ def post_by_id(id):
         }
         response = make_response(response_body, 404)
         return response
+    elif request.method == 'GET':
+                        
+        post_dict = post.to_dict()
+
+        response = make_response(
+            jsonify(post_dict),
+            200
+        )
+        return response
     else:
-        if request.method == 'GET':
-            post_dict = post.to_dict()
+        if request.method == 'DELETE':
+            db.session.delete(post)
+            db.session.commit()
+
+            response_body = {
+                "message": "Post deleted."
+            }
 
             response = make_response(
-                jsonify(post_dict),
+                response_body,
                 200
             )
+
             return response
+        
+    
 
 
 @app.route('/tags', methods=['GET'])
