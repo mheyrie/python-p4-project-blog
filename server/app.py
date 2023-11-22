@@ -19,43 +19,19 @@ def home():
     return '<h1>Welcome to my Blog</h1>'
 
 
-@app.route('/users', methods=['GET', 'POST'])
+@app.route('/users')
 def users():
-    # if request.method == 'GET':
-    #     return make_response(jsonify([user.to_dict(rules=('-tags','-password',)) for user in User.query.all()]), 200)
-    if request.method == 'POST':
-        data = request.json
+    users = []
+    for user in User.query.all():
+        user_dict = user.to_dict()
+        users.append(user_dict)
 
-        email = data.get('email')
+    response = make_response(
+        users,
+        200
+    )
 
-        db_user = User.query.filter_by(email==email).first()
-
-        if db_user is not None:
-            response_body = {
-                "message": "This email already exists, Please use a different email to sign up"
-            }
-
-            response = make_response(jsonify(response_body), 404)
-
-            return response 
-        
-        else:
-            new_user = User(
-                name=data.get('name'), 
-                email=data.get('email'), 
-                phone_number=data.get('phone_number'), 
-                password=data.get('password'))
-            
-            db.session.add(new_user)
-            db.session.commit()
-
-            user_dict = new_user.to_dict()
-            response = make_response(
-                jsonify(user_dict),
-                201
-            )
-
-            return response
+    return response
 
 @app.route('/posts', methods=['GET'])
 def posts():

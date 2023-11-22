@@ -37,6 +37,7 @@ function Blog() {
 
       return (
         <section className="container">
+          
           {posts.map((post) => (
             <div key={post.id} className="card">
               <h2>

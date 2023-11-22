@@ -9,7 +9,6 @@ function Navbar() {
         </div>
         <nav className="nav_details">
             <Link to="signup" className="nav_signup">SignUp</Link>
-            <Link to="login" className="nav_login">Login</Link>
             <Link to="blog" className="nav_blog">Blog</Link>
             <Link to="create_blog" className="nav_create_blog">Create Blog</Link>
             

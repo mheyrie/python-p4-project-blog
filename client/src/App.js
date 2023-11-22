@@ -3,7 +3,7 @@ import Blog from "./components/Blog";
 import Navbar from "./components/Navbar";
 import SignUp from "./components/SignUp";
 import CreateBlog from "./components/CreateBlog";
-import Login from "./components/Login";
+
 
 
 
@@ -14,7 +14,6 @@ function App() {
       <Navbar />
       <Routes>
         <Route exact path="signup" element={<SignUp/>} />
-        <Route exact path="login" element={<Login />} />
         <Route exact path="blog" element={<Blog/>} />
         <Route exact path="create_blog" element={<CreateBlog/>} />
         
