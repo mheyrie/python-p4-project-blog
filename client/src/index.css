@@ -50,3 +50,17 @@ code {
   color: aliceblue;
   background-color: black;
 }
+
+.container_blog{
+  background-color: white;
+  justify-content: center;
+  text-align: center;
+}
+
+.title{
+  width: 40%;
+}
+
+.body{
+  width: 40%;
+}
