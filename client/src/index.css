@@ -11,3 +11,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.App_page{
+  background-color: rgb(91, 114, 117);
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.nav-header{
+  text-align: center;
+}
+
+.nav_details{
+  margin: 20px;
+  padding: 20px;
+
+}
+
+.nav_signup{
+  padding: 50px;
+}
+
+.nav_login{
+  padding: 50px;
+}
+
+.card {
+  background-color: pink;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.delete_btn{
+  color: aliceblue;
+  background-color: black;
+}
